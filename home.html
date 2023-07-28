@@ -6,16 +6,15 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <script src="https://cdn.WebRTC-Experiment.com/RecordRTC.js"></script>
-
-
 </head>
+
 <body>
 <h1>Record Commands</h1>
 <p>Please click the "Record" button to say the command:</p>
 
 <button id="startRecording">Record</button>
 <button id="stopRecording" disabled>Stop</button>
-<button id="downloadAll" >Download All</button>
+<button id="downloadAll" disabled>Download All</button>
 
 <div id="commandsList">
   <ul>
@@ -28,6 +27,7 @@
 </div>
 
 <script>
+  // Rest of the JavaScript code
   let chunks = [];
   let mediaRecorder;
   let recording = false;
@@ -82,25 +82,30 @@
   }
 
   function downloadAllRecordings() {
-
+    const userName = prompt("Please enter your Roll No or Name:", "");
+    if (!userName) {
+      alert("Please enter your Roll No or Name!");
+      return;
+    }
 
     const zip = new JSZip();
     const folder = zip.folder("recordings");
 
     recordedCommands.forEach((blob, index) => {
       const commandName = document.querySelector(`#commandsList li:nth-child(${index + 1})`).textContent.trim();
-      folder.file(`command_${index + 1}.ogg`, blob);
+      folder.file(`${userName}_command_${index + 1}.ogg`, blob);
     });
 
     zip.generateAsync({ type: "blob" }).then(function (content) {
-      alert("A zip recoring will be downloaded");
+      alert("A zip recording will be downloaded");
       const url = URL.createObjectURL(content);
       const link = document.createElement("a");
       link.href = url;
-      link.download = "recordings.zip";
+      link.download = `${userName}_recordings.zip`;
+      document.body.appendChild(link); // Append the link to the document (required for Firefox)
       link.click();
-      alert("Download All button clicked!");
-      // <a href= download> kek </a>
+      document.body.removeChild(link); // Clean up the temporary link element
+
       // Cleanup
       URL.revokeObjectURL(url);
     });
