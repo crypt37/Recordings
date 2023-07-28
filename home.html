@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Record Commands</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <script src="https://cdn.WebRTC-Experiment.com/RecordRTC.js"></script>
+
+
+</head>
+<body>
+<h1>Record Commands</h1>
+<p>Please click the "Record" button to say the command:</p>
+
+<button id="startRecording">Record</button>
+<button id="stopRecording" disabled>Stop</button>
+<button id="downloadAll" >Download All</button>
+
+<div id="commandsList">
+  <ul>
+    <!-- List of commands to be said by the user -->
+    <li>FILL UP A CUP WITH COFFEE PLEASE</li>
+    <li>I WOULD LIKE A CUP OF COFFEE PLEASE</li>
+    <li>PLEASE PROVIDE ME WITH A CUP OF COFFEE</li>
+    <!-- Add other commands here -->
+  </ul>
+</div>
+
+<script>
+  let chunks = [];
+  let mediaRecorder;
+  let recording = false;
+  const recordedCommands = [];
+  let currentCommandIndex = 0;
+
+  function showNextCommand() {
+    const commandsList = document.querySelectorAll('#commandsList li');
+    if (currentCommandIndex < commandsList.length) {
+      commandsList[currentCommandIndex].style.display = 'block';
+    } else {
+      // All commands are recorded
+      document.getElementById('startRecording').style.display = 'none';
+      document.getElementById('stopRecording').style.display = 'none';
+      document.getElementById('downloadAll').disabled = false; // Enable the "Download All" button
+    }
+  }
+
+  function startRecording() {
+    const commandListItem = document.querySelector('#commandsList li:nth-child(' + (currentCommandIndex + 1) + ')');
+    if (commandListItem) {
+      const command = commandListItem.textContent.trim();
+      if (command) {
+        // Start recording and update the list item status
+        commandListItem.style.display = 'none';
+        commandListItem.classList.add('recording');
+        mediaRecorder.start();
+        recording = true;
+        document.getElementById('startRecording').disabled = true;
+        document.getElementById('stopRecording').disabled = false;
+        document.getElementById('downloadAll').disabled = true;
+      }
+    }
+  }
+
+  function stopRecording() {
+    if (recording) {
+      mediaRecorder.stop();
+      recording = false;
+      // Mark the current command as recorded and move to the next one
+      const commandListItem = document.querySelector('#commandsList li.recording:not(.recorded)');
+      if (commandListItem) {
+        commandListItem.classList.remove('recording');
+        commandListItem.classList.add('recorded');
+        currentCommandIndex++;
+      }
+      showNextCommand();
+      document.getElementById('startRecording').disabled = false;
+      document.getElementById('stopRecording').disabled = true;
+      document.getElementById('downloadAll').disabled = false;
+    }
+  }
+
+  function downloadAllRecordings() {
+
+
+    const zip = new JSZip();
+    const folder = zip.folder("recordings");
+
+    recordedCommands.forEach((blob, index) => {
+      const commandName = document.querySelector(`#commandsList li:nth-child(${index + 1})`).textContent.trim();
+      folder.file(`command_${index + 1}.ogg`, blob);
+    });
+
+    zip.generateAsync({ type: "blob" }).then(function (content) {
+      alert("A zip recoring will be downloaded");
+      const url = URL.createObjectURL(content);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "recordings.zip";
+      link.click();
+      alert("Download All button clicked!");
+      // <a href= download> kek </a>
+      // Cleanup
+      URL.revokeObjectURL(url);
+    });
+  }
+
+  // Get user media (microphone) and set up the MediaRecorder
+  navigator.mediaDevices.getUserMedia({ audio: true })
+    .then(stream => {
+      mediaRecorder = new MediaRecorder(stream);
+
+      mediaRecorder.ondataavailable = (e) => {
+        chunks.push(e.data);
+      };
+
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(chunks, { type: 'audio/ogg; codecs=opus' });
+        chunks = [];
+        recordedCommands.push(blob);
+      };
+
+      // Buttons are now clickable
+      document.getElementById('startRecording').disabled = false;
+      document.getElementById('stopRecording').disabled = true;
+      document.getElementById('downloadAll').disabled = true;
+
+      // Set event listeners for the buttons
+      document.getElementById('startRecording').addEventListener('click', startRecording);
+      document.getElementById('stopRecording').addEventListener('click', stopRecording);
+      document.getElementById('downloadAll').addEventListener('click', downloadAllRecordings);
+    })
+    .catch(err => {
+      console.error('Error accessing the microphone:', err);
+    });
+</script>
+</body>
+
+</html>
