@@ -1,3 +1,6 @@
+To record the audio in .flac format, you'll need to make some changes to the code. We'll update the MIME type and the file extension in the Blob creation and download process. Here's the modified code:
+
+```html
 <!DOCTYPE html>
 <html>
 
@@ -17,6 +20,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <script src="https://cdn.WebRTC-Experiment.com/RecordRTC.js"></script>
 </head>
+
 <body class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
 <div class="container text-center">
   <h1>Record Commands</h1>
@@ -41,27 +45,7 @@
       <!-- List of commands to be said by the user -->
             <li>FILL UP A CUP WITH COFFEE PLEASE</li>
             <li>I WOULD LIKE A CUP OF COFFEE PLEASE</li>
-            <li>PLEASE PROVIDE ME WITH A CUP OF COFFEE</li>
-            <li>CAN YOU GET ME A CUP OF HOT COFFEE PLEASE</li>
-            <li>Hey Arm MAKE ME A CUP OF DELICIOUS COFFEE PLEASE</li>
-            <li>POUR ME A CUP OF SPRITE PLEASE</li>
-            <li>Hey Arm CAN I HAVE A CUP OF CHILLED SPRITE</li>
-            <li>FILL UP A CUP WITH SPRITE PLEASE</li>
-            <li>Hey Arm!</li>
-            <li>I WOULD LIKE A CUP OF SPRITE PLEASE</li>
-            <li>PLEASE SERVE ME A CUP OF SPRITE</li>
-            <li>CAN I HAVE A CUP OF WATER?</li>
-            <li>FILL UP A CUP WITH WATER, PLEASE.</li>
-            <li>Hey Arm I WOULD LIKE A CUP OF WATER, PLEASE.</li>
-            <li>CAN YOU GET ME A CUP OF COLD WATER, PLEASE?</li>
-            <li>PLEASE SERVE ME A CUP OF FRESH WATER.</li>
-            <li>Hey Arm!</li>
-            <li>POUR ME A CUP OF ORANGE JUICE, PLEASE.</li>
-            <li>FILL UP A CUP WITH ORANGE JUICE, PLEASE.</li>
-            <li> Hey Arm I WOULD LIKE A CUP OF ORANGE JUICE, PLEASE.</li>
-            <li>PLEASE PROVIDE ME WITH A CUP OF ORANGE JUICE.</li>
-            <li>POUR ME A CUP OF DELICIOUS ORANGE JUICE, PLEASE.</li>
-      <!-- Add other commands here -->
+            <!-- Add other commands here -->
     </ul>
   </div>
 </div>
@@ -77,12 +61,14 @@
   // Request microphone access only once when the page loads
   navigator.mediaDevices.getUserMedia({ audio: true })
     .then(stream => {
-      mediaRecorder = new MediaRecorder(stream);
+      mediaRecorder = new MediaRecorder(stream, {
+        mimeType: 'audio/webm; codecs=flac'
+      });
       mediaRecorder.ondataavailable = (e) => {
         chunks.push(e.data);
       };
       mediaRecorder.onstop = () => {
-        const blob = new Blob(chunks, { type: 'audio/ogg; codecs=opus' });
+        const blob = new Blob(chunks, { type: 'audio/flac' });
         chunks = [];
         recordedCommands.push(blob);
       };
@@ -158,7 +144,7 @@
 
     recordedCommands.forEach((blob, index) => {
       const commandName = document.querySelector(`#commandsList li:nth-child(${index + 1})`).textContent.trim();
-      folder.file(`${userName}_command_${index + 1}.ogg`, blob);
+      folder.file(`${userName}_command_${index + 1}.flac`, blob);
     });
 
     zip.generateAsync({ type: "blob" }).then(function (content) {
@@ -189,3 +175,6 @@
 </body>
 
 </html>
+```
+
+With these changes, the recorded audio files will be saved in .flac format instead of .ogg. Remember that not all browsers support .
