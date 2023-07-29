@@ -1,81 +1,160 @@
-
 <!DOCTYPE html>
 <html>
 
 <head>
   <title>Record Commands</title>
   <style>
-    /* CSS to hide all commands except the first one */
-    #commandsList ul li:not(:first-child) {
+    /* CSS to center the command and adjust button positioning */
+    body {
+      min-height: 100vh;
+      display: flex;
+
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      width: auto;
+      font-family: Arial, sans-serif;
+    }
+
+    #commandsContainer {
+      text-align: center;
+      line-height: 1.5;
+      font-size: 1.5em;
+      margin-bottom: 20px;
+      display: flex;
+      height: auto;
+      flex-direction: column; /* Display commands in a column */
+      align-items: center;
+      /* Height to display three lines of text */
+
+    }
+
+    .command {
+      opacity: 0.5;
+      font-size: 1.5em;
+      transition: opacity 0.5s, font-size 0.5s;
+    }
+
+    .active {
+      opacity: 1;
+      text-align: center;
+      font-size: 2.5em;
+    }
+
+    .hidden{
       display: none;
+    }
+
+    #stopButton {
+      display: none;
+      margin-top: 10px;
+
+    }
+
+    #controlButtons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
     }
   </style>
   <!-- Add Bootstrap CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+
   <!-- Add Font Awesome CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-  <script src="https://cdn.WebRTC-Experiment.com/RecordRTC.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
 </head>
+
 <body class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
 <div class="container text-center">
-  <h1>Record Commands</h1>
-  <p>Please click the "Record" button to say the command:</p>
+    <div id="commandsContainer">
+      <div class="command active">FILL UP A CUP WITH COFFEE PLEASE</div>
+      <div class="command">I WOULD LIKE A CUP OF COFFEE PLEASE</div>
+      <div class="command hidden">PLEASE PROVIDE ME WITH A CUP OF COFFEE</div>
+      <div class="command hidden">CAN YOU GET ME A CUP OF HOT COFFEE PLEASE</div>
+      <div class="command hidden">Hey Arm MAKE ME A CUP OF DELICIOUS COFFEE PLEASE</div>
+      <div class="command hidden">POUR ME A CUP OF SPRITE PLEASE</div>
+      <div class="command hidden">Hey Arm CAN I HAVE A CUP OF CHILLED SPRITE</div>
+      <div class="command hidden">FILL UP A CUP WITH SPRITE PLEASE</div>
+      <div class="command hidden">Hey Arm!</div>
+      <div class="command hidden">I WOULD LIKE A CUP OF SPRITE PLEASE</div>
+      <div class="command hidden">PLEASE SERVE ME A CUP OF SPRITE</div>
+      <div class="command hidden">CAN I HAVE A CUP OF WATER?</div>
+      <div class="command hidden">FILL UP A CUP WITH WATER, PLEASE.</div>
+      <div class="command hidden">Hey Arm I WOULD LIKE A CUP OF WATER, PLEASE.</div>
+      <div class="command hidden">CAN YOU GET ME A CUP OF COLD WATER, PLEASE?</div>
+      <div class="command hidden">PLEASE SERVE ME A CUP OF FRESH WATER.</div>
+      <div class="command hidden">Hey Arm!</div>
+      <div class="command hidden">POUR ME A CUP OF ORANGE JUICE, PLEASE.</div>
+      <div class="command hidden">FILL UP A CUP WITH ORANGE JUICE, PLEASE.</div>
+      <div class="command hidden">Hey Arm I WOULD LIKE A CUP OF ORANGE JUICE, PLEASE.</div>
+      <div class="command hidden">PLEASE PROVIDE ME WITH A CUP OF ORANGE JUICE.</div>
+      <div class="command hidden">POUR ME A CUP OF DELICIOUS ORANGE JUICE, PLEASE.</div>
 
-  <div class="row">
-    <div class="col">
-      <button id="startRecording" class="btn btn-primary">
-        <i class="fas fa-microphone"></i> Record
-      </button>
-      <button id="stopRecording" class="btn btn-danger" disabled>
-        <i class="fas fa-microphone-alt-slash"></i> Stop
-      </button>
-      <button id="downloadAll" class="btn btn-success" disabled>
-        <i class="fas fa-download"></i> Download All
-      </button>
+      <!-- Add more commands here -->
     </div>
-  </div>
-
-  <div id="commandsList" class="my-4">
-    <ul>
-      <!-- List of commands to be said by the user -->
-            <li>FILL UP A CUP WITH COFFEE PLEASE</li>
-            <li>I WOULD LIKE A CUP OF COFFEE PLEASE</li>
-            <li>PLEASE PROVIDE ME WITH A CUP OF COFFEE</li>
-            <li>CAN YOU GET ME A CUP OF HOT COFFEE PLEASE</li>
-            <li>Hey Arm MAKE ME A CUP OF DELICIOUS COFFEE PLEASE</li>
-            <li>POUR ME A CUP OF SPRITE PLEASE</li>
-            <li>Hey Arm CAN I HAVE A CUP OF CHILLED SPRITE</li>
-            <li>FILL UP A CUP WITH SPRITE PLEASE</li>
-            <li>Hey Arm!</li>
-            <li>I WOULD LIKE A CUP OF SPRITE PLEASE</li>
-            <li>PLEASE SERVE ME A CUP OF SPRITE</li>
-            <li>CAN I HAVE A CUP OF WATER?</li>
-            <li>FILL UP A CUP WITH WATER, PLEASE.</li>
-            <li>Hey Arm I WOULD LIKE A CUP OF WATER, PLEASE.</li>
-            <li>CAN YOU GET ME A CUP OF COLD WATER, PLEASE?</li>
-            <li>PLEASE SERVE ME A CUP OF FRESH WATER.</li>
-            <li>Hey Arm!</li>
-            <li>POUR ME A CUP OF ORANGE JUICE, PLEASE.</li>
-            <li>FILL UP A CUP WITH ORANGE JUICE, PLEASE.</li>
-            <li> Hey Arm I WOULD LIKE A CUP OF ORANGE JUICE, PLEASE.</li>
-            <li>PLEASE PROVIDE ME WITH A CUP OF ORANGE JUICE.</li>
-            <li>POUR ME A CUP OF DELICIOUS ORANGE JUICE, PLEASE.</li>
-      <!-- Add other commands here -->
-    </ul>
-  </div>
+    <div class="row" id="controlButtons">
+      <div class="col">
+        <button id="startButton" class="btn btn-primary">
+          <i class="fas fa-microphone"></i> Record
+        </button>
+        <button id="stopButton" class="btn btn-danger"  >
+          <i class="fas fa-microphone-alt-slash"></i> Stop
+        </button>
+        <button id="downloadAll" class="btn btn-success">
+          <i class="fas fa-download"></i> Download All
+        </button>
+      </div>
+    </div>
 </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script src="https://cdn.WebRTC-Experiment.com/RecordRTC.js"></script>
+
 <script>
+
   // Rest of the JavaScript code
   let chunks = [];
   let mediaRecorder = null; // Initialize mediaRecorder to null
   let recording = false;
   const recordedCommands = [];
   let currentCommandIndex = 0;
+  const commands = document.querySelectorAll('.command');
+  let currentIndex = 1;
 
-  // Request microphone access only once when the page loads
+  function showNextCommand()
+  {
+
+    const currentCommand = commands[currentIndex];
+    const prevIndex = (currentIndex - 1 + commands.length) % commands.length;
+    const prev_prevIndex=(prevIndex-1+commands.length)%commands.length;
+    const prevCommand = commands[prevIndex];
+    const prev_prevCommand=commands[prev_prevIndex]
+
+    const nextIndex = (currentIndex + 1) % commands.length;
+    const next_nextIndex=(nextIndex + 1) % commands.length;
+    const nextCommand = commands[nextIndex];
+    const next_nextCommand = commands[next_nextIndex];
+    // console.log(currentIndex,nextIndex,prevIndex)
+    currentCommand.classList.remove('hidden');
+    currentCommand.classList.add('active');
+    // prevCommand.classList.add('fade');
+    prev_prevCommand.classList.add("hidden");
+    prevCommand.classList.remove('active');
+    // next_nextCommand.classList.add('hidden');
+    nextCommand.classList.remove('hidden');
+    //nextCommand.classList.add('fade');
+
+    currentIndex = nextIndex;
+  }
+
+
   navigator.mediaDevices.getUserMedia({ audio: true })
     .then(stream => {
       mediaRecorder = new MediaRecorder(stream);
@@ -83,71 +162,96 @@
         chunks.push(e.data);
       };
       mediaRecorder.onstop = () => {
-        const blob = new Blob(chunks, { type: 'audio/ogg; codecs=opus' });
+
+        const blob = new Blob(chunks, { type: 'audio/flac' });
         chunks = [];
         recordedCommands.push(blob);
       };
 
-      // Buttons are now clickable
-      document.getElementById('startRecording').disabled = false;
-      document.getElementById('stopRecording').disabled = true;
+
+      document.getElementById('startButton').disabled = false;
+      document.getElementById('stopButton').disabled = true;
       document.getElementById('downloadAll').disabled = true;
     })
     .catch(err => {
       console.error('Error accessing the microphone:', err);
     });
 
-  function showNextCommand() {
-    const commandsList = document.querySelectorAll('#commandsList li');
-    if (currentCommandIndex < commandsList.length) {
-      commandsList[currentCommandIndex].style.display = 'block';
-    } else {
-      // All commands are recorded
-      document.getElementById('startRecording').style.display = 'none';
-      document.getElementById('stopRecording').style.display = 'none';
-      document.getElementById('downloadAll').disabled = false; // Enable the "Download All" button
-    }
-  }
 
   function startRecording() {
-    const commandListItem = document.querySelector('#commandsList li:nth-child(' + (currentCommandIndex + 1) + ')');
+
+
+    document.getElementById('downloadAll').style.display = 'none';
+    document.getElementById('startButton').style.display = 'none';
+    document.getElementById('stopButton').style.display = 'inline-block';
+    document.getElementById('stopButton').disabled = false;
+
+    const commandListItem = document.querySelectorAll('.command');
     if (commandListItem) {
-      const command = commandListItem.textContent.trim();
+      const command = commandListItem.item(0).innerHTML;
+
       if (command) {
+        console.log(command)
         if (mediaRecorder && recording) {
           // Stop the ongoing recording
+          console.log("recording stopped")
           stopRecording();
         }
         // Start new recording
-        commandListItem.classList.add('recording');
+
         mediaRecorder.start();
         recording = true;
-        document.getElementById('startRecording').disabled = true;
-        document.getElementById('stopRecording').disabled = false;
-        document.getElementById('downloadAll').disabled = true;
+        console.log("from startrecording",mediaRecorder,recording)
+
+
       }
     }
   }
 
   function stopRecording() {
-    if (recording && mediaRecorder) {
+    showNextCommand();
+    console.log("check",recording,mediaRecorder)
+    if (recording && mediaRecorder)
+    {
+
       mediaRecorder.stop();
       recording = false;
       // Mark the current command as recorded and move to the next one
-      const commandListItem = document.querySelector('#commandsList li.recording:not(.recorded)');
+
+      const commandListItem = document.querySelectorAll('.command');
       if (commandListItem) {
-        commandListItem.classList.remove('recording');
-        commandListItem.classList.add('recorded');
+        // document.getElementsByClassName('command').
+        // commandListItem.classList.remove('recording');
+        // commandListItem.classList.add('recorded');
         currentCommandIndex++;
       }
-      showNextCommand();
-      document.getElementById('startRecording').disabled = false;
-      document.getElementById('stopRecording').disabled = true;
-      document.getElementById('downloadAll').disabled = currentCommandIndex !== (recordedCommands.length + 1);
+      console.log("current index",currentCommandIndex)
+      document.getElementById('stopButton').style.display = 'none';
+      document.getElementById('startButton').style.display = 'inline-block'
+      document.getElementById('startButton').disabled = false;
+            document.getElementById('downloadAll').style.display = 'none';
+
+      document.getElementById('downloadAll').disabled = true;
+      // console.log(currentCommandIndex)
+
+
+      if (currentCommandIndex===22){
+        document.getElementById('startButton').disabled = true;
+        document.getElementById('stopButton').disabled = true;
+        document.getElementById('downloadAll').disabled = false;
+        document.getElementById('startButton').style.display = 'none';
+        document.getElementById('downloadAll').style.display = 'inline-block';
+        document.getElementById('commandsContainer').innerHTML="<h1> Thenks :)</h1>";
+
+
+
+      }
+
     }
   }
 
-  function downloadAllRecordings() {
+  function downloadAllRecordings()
+  {
     const userName = prompt("Please enter your Roll No or Name:", "");
     if (!userName) {
       alert("Please enter your Roll No or Name!");
@@ -158,8 +262,10 @@
     const folder = zip.folder("recordings");
 
     recordedCommands.forEach((blob, index) => {
-      const commandName = document.querySelector(`#commandsList li:nth-child(${index + 1})`).textContent.trim();
-      folder.file(`${userName}_command_${index + 1}.ogg`, blob);
+
+      const commandListItem = document.querySelectorAll('.command');
+      const commandName = commandListItem.item(0).innerHTML;
+      folder.file(`${userName}${commandName}${index + 1}.flac`, blob);
     });
 
     zip.generateAsync({ type: "blob" }).then(function (content) {
@@ -178,15 +284,16 @@
   }
 
   // Set event listeners for the buttons
-  document.getElementById('startRecording').addEventListener('click', startRecording);
-  document.getElementById('stopRecording').addEventListener('click', stopRecording);
+
+  document.getElementById('startButton').addEventListener('click', startRecording);
+  document.getElementById('stopButton').addEventListener('click', stopRecording);
   document.getElementById('downloadAll').addEventListener('click', downloadAllRecordings);
 </script>
 <!-- Add Bootstrap JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
-</html> 
+</html>
