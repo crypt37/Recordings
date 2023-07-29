@@ -192,17 +192,17 @@
       const command = commandListItem.item(0).innerHTML;
 
       if (command) {
-        console.log(command)
+        // console.log(command)
         if (mediaRecorder && recording) {
           // Stop the ongoing recording
-          console.log("recording stopped")
+          // console.log("recording stopped")
           stopRecording();
         }
         // Start new recording
 
         mediaRecorder.start();
         recording = true;
-        console.log("from startrecording",mediaRecorder,recording)
+
 
 
       }
@@ -211,7 +211,7 @@
 
   function stopRecording() {
     showNextCommand();
-    console.log("check",recording,mediaRecorder)
+
     if (recording && mediaRecorder)
     {
 
@@ -226,7 +226,7 @@
         // commandListItem.classList.add('recorded');
         currentCommandIndex++;
       }
-      console.log("current index",currentCommandIndex)
+
       document.getElementById('stopButton').style.display = 'none';
       document.getElementById('startButton').style.display = 'inline-block'
       document.getElementById('startButton').disabled = false;
