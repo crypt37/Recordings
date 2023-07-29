@@ -3,52 +3,79 @@
 
 <head>
   <title>Record Commands</title>
+  <style>
+    /* CSS to hide all commands except the first one */
+    #commandsList ul li:not(:first-child) {
+      display: none;
+    }
+  </style>
+  <!-- Add Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <!-- Add Font Awesome CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <script src="https://cdn.WebRTC-Experiment.com/RecordRTC.js"></script>
 </head>
+<body class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+<div class="container text-center">
+  <h1>Record Commands</h1>
+  <p>Please click the "Record" button to say the command:</p>
 
-<body>
-<h1>Record Commands</h1>
-<p>Please click the "Record" button and  say ONE of the command:</p>
+  <div class="row">
+    <div class="col">
+      <button id="startRecording" class="btn btn-primary">
+        <i class="fas fa-microphone"></i> Record
+      </button>
+      <button id="stopRecording" class="btn btn-danger" disabled>
+        <i class="fas fa-microphone-alt-slash"></i> Stop
+      </button>
+      <button id="downloadAll" class="btn btn-success" disabled>
+        <i class="fas fa-download"></i> Download All
+      </button>
+    </div>
+  </div>
 
-<button id="startRecording">Record</button>
-<button id="stopRecording" disabled>Stop</button>
-<button id="downloadAll" disabled>Download All</button>
-
-<div id="commandsList">
-  <ul>
-    <!-- List of commands to be said by the user -->
-            <li>FILL UP A CUP WITH COFFEE PLEASE</li>
-            <li>I WOULD LIKE A CUP OF COFFEE PLEASE</li>
-            <li>PLEASE PROVIDE ME WITH A CUP OF COFFEE</li>
-            <li>CAN YOU GET ME A CUP OF HOT COFFEE PLEASE</li>
-            <li>MAKE ME A CUP OF DELICIOUS COFFEE PLEASE</li>
-            <li>POUR ME A CUP OF SPRITE PLEASE</li>
-            <li>CAN I HAVE A CUP OF CHILLED SPRITE</li>
-            <li>FILL UP A CUP WITH SPRITE PLEASE</li>
-            <li>I WOULD LIKE A CUP OF SPRITE PLEASE</li>
-            <li>PLEASE SERVE ME A CUP OF SPRITE</li>
-            <li>CAN I HAVE A CUP OF WATER?</li>
-            <li>FILL UP A CUP WITH WATER, PLEASE.</li>
-            <li>I WOULD LIKE A CUP OF WATER, PLEASE.</li>
-            <li>CAN YOU GET ME A CUP OF COLD WATER, PLEASE?</li>
-            <li>PLEASE SERVE ME A CUP OF FRESH WATER.</li>
-            <li>POUR ME A CUP OF ORANGE JUICE, PLEASE.</li>
-            <li>FILL UP A CUP WITH ORANGE JUICE, PLEASE.</li>
-            <li>I WOULD LIKE A CUP OF ORANGE JUICE, PLEASE.</li>
-            <li>PLEASE PROVIDE ME WITH A CUP OF ORANGE JUICE.</li>
-            <li>POUR ME A CUP OF DELICIOUS ORANGE JUICE, PLEASE.</li>
-  </ul>
+  <div id="commandsList" class="my-4">
+    <ul>
+      <!-- List of commands to be said by the user -->
+      <li>FILL UP A CUP WITH COFFEE PLEASE</li>
+      <li>I WOULD LIKE A CUP OF COFFEE PLEASE</li>
+      <li>PLEASE PROVIDE ME WITH A CUP OF COFFEE</li>
+      <!-- Add other commands here -->
+    </ul>
+  </div>
 </div>
 
 <script>
   // Rest of the JavaScript code
   let chunks = [];
-  let mediaRecorder;
+  let mediaRecorder = null; // Initialize mediaRecorder to null
   let recording = false;
   const recordedCommands = [];
   let currentCommandIndex = 0;
+
+  // Request microphone access only once when the page loads
+  navigator.mediaDevices.getUserMedia({ audio: true })
+    .then(stream => {
+      mediaRecorder = new MediaRecorder(stream);
+      mediaRecorder.ondataavailable = (e) => {
+        chunks.push(e.data);
+      };
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(chunks, { type: 'audio/ogg; codecs=opus' });
+        chunks = [];
+        recordedCommands.push(blob);
+      };
+
+      // Buttons are now clickable
+      document.getElementById('startRecording').disabled = false;
+      document.getElementById('stopRecording').disabled = true;
+      document.getElementById('downloadAll').disabled = true;
+    })
+    .catch(err => {
+      console.error('Error accessing the microphone:', err);
+    });
 
   function showNextCommand() {
     const commandsList = document.querySelectorAll('#commandsList li');
@@ -58,7 +85,7 @@
       // All commands are recorded
       document.getElementById('startRecording').style.display = 'none';
       document.getElementById('stopRecording').style.display = 'none';
-      document.getElementById('downloadAll').disabled = true; // Enable the "Download All" button
+      document.getElementById('downloadAll').disabled = false; // Enable the "Download All" button
     }
   }
 
@@ -67,8 +94,11 @@
     if (commandListItem) {
       const command = commandListItem.textContent.trim();
       if (command) {
-        // Start recording and update the list item status
-        commandListItem.style.display = 'none';
+        if (mediaRecorder && recording) {
+          // Stop the ongoing recording
+          stopRecording();
+        }
+        // Start new recording
         commandListItem.classList.add('recording');
         mediaRecorder.start();
         recording = true;
@@ -80,7 +110,7 @@
   }
 
   function stopRecording() {
-    if (recording) {
+    if (recording && mediaRecorder) {
       mediaRecorder.stop();
       recording = false;
       // Mark the current command as recorded and move to the next one
@@ -93,7 +123,7 @@
       showNextCommand();
       document.getElementById('startRecording').disabled = false;
       document.getElementById('stopRecording').disabled = true;
-      document.getElementById('downloadAll').disabled = false;
+      document.getElementById('downloadAll').disabled = currentCommandIndex !== (recordedCommands.length + 1);
     }
   }
 
@@ -127,35 +157,16 @@
     });
   }
 
-  // Get user media (microphone) and set up the MediaRecorder
-  navigator.mediaDevices.getUserMedia({ audio: true })
-    .then(stream => {
-      mediaRecorder = new MediaRecorder(stream);
-
-      mediaRecorder.ondataavailable = (e) => {
-        chunks.push(e.data);
-      };
-
-      mediaRecorder.onstop = () => {
-        const blob = new Blob(chunks, { type: 'audio/ogg; codecs=opus' });
-        chunks = [];
-        recordedCommands.push(blob);
-      };
-
-      // Buttons are now clickable
-      document.getElementById('startRecording').disabled = false;
-      document.getElementById('stopRecording').disabled = true;
-      document.getElementById('downloadAll').disabled = true;
-
-      // Set event listeners for the buttons
-      document.getElementById('startRecording').addEventListener('click', startRecording);
-      document.getElementById('stopRecording').addEventListener('click', stopRecording);
-      document.getElementById('downloadAll').addEventListener('click', downloadAllRecordings);
-    })
-    .catch(err => {
-      console.error('Error accessing the microphone:', err);
-    });
+  // Set event listeners for the buttons
+  document.getElementById('startRecording').addEventListener('click', startRecording);
+  document.getElementById('stopRecording').addEventListener('click', stopRecording);
+  document.getElementById('downloadAll').addEventListener('click', downloadAllRecordings);
 </script>
+<!-- Add Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+
 </body>
 
 </html>
