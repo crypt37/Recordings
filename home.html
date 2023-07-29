@@ -265,7 +265,7 @@
 
       const commandListItem = document.querySelectorAll('.command');
       const commandName = commandListItem.item(0).innerHTML;
-      folder.file(`${userName}${commandName}${index + 1}.flac`, blob);
+      folder.file(`${userName}${index + 1}.flac`, blob);
     });
 
     zip.generateAsync({ type: "blob" }).then(function (content) {
