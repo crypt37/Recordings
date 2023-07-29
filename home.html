@@ -68,50 +68,51 @@
 </head>
 
 <body class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
-<div class="container text-center">
-    <div id="commandsContainer">
-      <div class="command active">FILL UP A CUP WITH COFFEE PLEASE</div>
-      <div class="command">I WOULD LIKE A CUP OF COFFEE PLEASE</div>
-      <div class="command hidden">PLEASE PROVIDE ME WITH A CUP OF COFFEE</div>
-      <div class="command hidden">CAN YOU GET ME A CUP OF HOT COFFEE PLEASE</div>
-      <div class="command hidden">Hey Arm MAKE ME A CUP OF DELICIOUS COFFEE PLEASE</div>
-      <div class="command hidden">POUR ME A CUP OF SPRITE PLEASE</div>
-      <div class="command hidden">Hey Arm CAN I HAVE A CUP OF CHILLED SPRITE</div>
-      <div class="command hidden">FILL UP A CUP WITH SPRITE PLEASE</div>
-      <div class="command hidden">Hey Arm!</div>
-      <div class="command hidden">I WOULD LIKE A CUP OF SPRITE PLEASE</div>
-      <div class="command hidden">PLEASE SERVE ME A CUP OF SPRITE</div>
-      <div class="command hidden">CAN I HAVE A CUP OF WATER?</div>
-      <div class="command hidden">FILL UP A CUP WITH WATER, PLEASE.</div>
-      <div class="command hidden">Hey Arm I WOULD LIKE A CUP OF WATER, PLEASE.</div>
-      <div class="command hidden">CAN YOU GET ME A CUP OF COLD WATER, PLEASE?</div>
-      <div class="command hidden">PLEASE SERVE ME A CUP OF FRESH WATER.</div>
-      <div class="command hidden">Hey Arm!</div>
-      <div class="command hidden">POUR ME A CUP OF ORANGE JUICE, PLEASE.</div>
-      <div class="command hidden">FILL UP A CUP WITH ORANGE JUICE, PLEASE.</div>
-      <div class="command hidden">Hey Arm I WOULD LIKE A CUP OF ORANGE JUICE, PLEASE.</div>
-      <div class="command hidden">PLEASE PROVIDE ME WITH A CUP OF ORANGE JUICE.</div>
-      <div class="command hidden">POUR ME A CUP OF DELICIOUS ORANGE JUICE, PLEASE.</div>
 
-      <!-- Add more commands here -->
+<div class="container text-center">
+  <div id="commandsContainer">
+    <div class="command active">FILL UP A CUP WITH COFFEE PLEASE</div>
+    <div class="command">I WOULD LIKE A CUP OF COFFEE PLEASE</div>
+    <div class="command hidden">PLEASE PROVIDE ME WITH A CUP OF COFFEE</div>
+    <div class="command hidden">CAN YOU GET ME A CUP OF HOT COFFEE PLEASE</div>
+    <div class="command hidden">Hey Arm MAKE ME A CUP OF DELICIOUS COFFEE PLEASE</div>
+    <div class="command hidden">POUR ME A CUP OF SPRITE PLEASE</div>
+    <div class="command hidden">Hey Arm CAN I HAVE A CUP OF CHILLED SPRITE</div>
+    <div class="command hidden">FILL UP A CUP WITH SPRITE PLEASE</div>
+    <div class="command hidden">Hey Arm!</div>
+    <div class="command hidden">I WOULD LIKE A CUP OF SPRITE PLEASE</div>
+    <div class="command hidden">PLEASE SERVE ME A CUP OF SPRITE</div>
+    <div class="command hidden">CAN I HAVE A CUP OF WATER?</div>
+    <div class="command hidden">FILL UP A CUP WITH WATER, PLEASE.</div>
+    <div class="command hidden">Hey Arm I WOULD LIKE A CUP OF WATER, PLEASE.</div>
+    <div class="command hidden">CAN YOU GET ME A CUP OF COLD WATER, PLEASE?</div>
+    <div class="command hidden">PLEASE SERVE ME A CUP OF FRESH WATER.</div>
+    <div class="command hidden">Hey Arm!</div>
+    <div class="command hidden">POUR ME A CUP OF ORANGE JUICE, PLEASE.</div>
+    <div class="command hidden">FILL UP A CUP WITH ORANGE JUICE, PLEASE.</div>
+    <div class="command hidden">Hey Arm I WOULD LIKE A CUP OF ORANGE JUICE, PLEASE.</div>
+    <div class="command hidden">PLEASE PROVIDE ME WITH A CUP OF ORANGE JUICE.</div>
+    <div class="command hidden">POUR ME A CUP OF DELICIOUS ORANGE JUICE, PLEASE.</div>
+
+    <!-- Add more commands here -->
+  </div>
+  <div class="row" id="controlButtons">
+    <div class="col">
+      <button id="startButton" class="btn btn-primary">
+        <i class="fas fa-microphone"></i> Record
+      </button>
+      <button id="stopButton" class="btn btn-danger"  >
+        <i class="fas fa-microphone-alt-slash"></i> Stop
+      </button>
+      <button id="downloadAll" class="btn btn-success">
+        <i class="fas fa-download"></i> Download All
+      </button>
     </div>
-    <div class="row" id="controlButtons">
-      <div class="col">
-        <button id="startButton" class="btn btn-primary">
-          <i class="fas fa-microphone"></i> Record
-        </button>
-        <button id="stopButton" class="btn btn-danger"  >
-          <i class="fas fa-microphone-alt-slash"></i> Stop
-        </button>
-        <button id="downloadAll" class="btn btn-success">
-          <i class="fas fa-download"></i> Download All
-        </button>
-      </div>
-    </div>
+  </div>
 </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
@@ -229,7 +230,7 @@
       document.getElementById('stopButton').style.display = 'none';
       document.getElementById('startButton').style.display = 'inline-block'
       document.getElementById('startButton').disabled = false;
-            document.getElementById('downloadAll').style.display = 'none';
+      document.getElementById('downloadAll').style.display = 'none';
 
       document.getElementById('downloadAll').disabled = true;
       // console.log(currentCommandIndex)
@@ -241,7 +242,7 @@
         document.getElementById('downloadAll').disabled = false;
         document.getElementById('startButton').style.display = 'none';
         document.getElementById('downloadAll').style.display = 'inline-block';
-        document.getElementById('commandsContainer').innerHTML="<h1> Thenks :)</h1>";
+        // document.getElementById('commandsContainer').innerHTML="<h1> Thenks :)</h1>";
 
 
 
@@ -249,6 +250,7 @@
 
     }
   }
+
 
   function downloadAllRecordings()
   {
@@ -264,8 +266,9 @@
     recordedCommands.forEach((blob, index) => {
 
       const commandListItem = document.querySelectorAll('.command');
-      const commandName = commandListItem.item(0).innerHTML;
-      folder.file(`${userName}${index + 1}.flac`, blob);
+      const commandName = commandListItem.item(index).innerHTML;
+
+      folder.file(`${userName}${commandName}${index}.flac`, blob);
     });
 
     zip.generateAsync({ type: "blob" }).then(function (content) {
