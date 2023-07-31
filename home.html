@@ -184,7 +184,7 @@
 
 
     document.getElementById('downloadAll').style.display = 'none';
-    document.getElementById('startButton').style.display = 'none';
+    document.getElementById('startButton').disabled = true;
     document.getElementById('stopButton').style.display = 'inline-block';
     document.getElementById('stopButton').disabled = false;
 
@@ -228,7 +228,7 @@
         currentCommandIndex++;
       }
 
-      document.getElementById('stopButton').style.display = 'none';
+      document.getElementById('stopButton').disabled = true;
       document.getElementById('startButton').style.display = 'inline-block'
       document.getElementById('startButton').disabled = false;
       document.getElementById('downloadAll').style.display = 'none';
